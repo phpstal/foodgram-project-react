@@ -4,5 +4,5 @@ from .views import PostViewSet
 
 
 urlpatterns = [
-    path('recipe/', PostViewSet),
+    path('recipes/', PostViewSet),
 ]
