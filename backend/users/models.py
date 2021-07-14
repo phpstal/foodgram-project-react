@@ -15,7 +15,7 @@ class FoodUser(AbstractUser):
     )
     username = models.CharField(
         max_length=150,
-        verbose_name='Имя пользователя',
+        verbose_name='Логин пользователя',
         blank=False,
         unique=True,
     )

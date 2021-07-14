@@ -22,7 +22,7 @@ class FoodUserViewSet(viewsets.ModelViewSet):
     filterset_fields = ('email',)
     lookup_field = 'username'
 
-    @action(detail=False, methods=['GET', 'PATCH'],
+    @action(detail=False, methods=['GET', 'POST'],
             permission_classes=(IsAuthenticated,))
     def me(self, request):
         user = request.user
