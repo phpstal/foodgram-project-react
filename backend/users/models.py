@@ -1,14 +1,70 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 
 
-class userProfile(models.Model):
-    user=models.OneToOneField(User,on_delete=models.CASCADE,related_name="profile")
-    description=models.TextField(blank=True,null=True)
-    location=models.CharField(max_length=30,blank=True)
-    date_joined=models.DateTimeField(auto_now_add=True)
-    updated_on=models.DateTimeField(auto_now=True)
-    is_organizer=models.BooleanField(default=False)
+class ROLES_CHOICES(models.TextChoices):
+    USER = 'user'
+    MODERATOR = 'moderator'
+    ADMIN = 'admin'
 
-    def __str__(self):
-        return self.user.username
+
+class FoodUser(AbstractUser):
+    id = models.AutoField(
+        primary_key=True, 
+        db_index=True
+    )
+    username = models.CharField(
+        max_length=150,
+        verbose_name='Имя пользователя',
+        blank=False,
+        unique=True,
+    )
+    password = models.CharField(
+        max_length=70,
+        verbose_name='Пароль пользователя',
+        blank=False,
+    )
+    email = models.EmailField(
+        max_length=254,
+        verbose_name='E-Mail', 
+        unique=True,
+        blank=False
+    )
+    first_name = models.CharField(
+        max_length=150,
+        verbose_name='Имя пользователя',
+        blank=False,
+    )
+    last_name = models.CharField(
+        max_length=150,
+        verbose_name='Фамилия пользователя',
+        blank=False,
+    )
+
+    role = models.CharField(
+        default=ROLES_CHOICES.USER,
+        max_length=100,
+        choices=ROLES_CHOICES.choices,
+        verbose_name='Роль пользователя',
+    )
+    user_permissions = None
+    groups = None
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ('username',)
+
+    @property
+    def is_admin(self):
+        return any([
+            self.role == ROLES_CHOICES.ADMIN,
+            self.is_superuser,
+            self.is_staff,
+        ])
+
+    @property
+    def is_moderator(self):
+        return self.role == ROLES_CHOICES.MODERATOR
+
+    class Meta:
+        verbose_name_plural = 'Пользователи'
+        ordering = ['id']
