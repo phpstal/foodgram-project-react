@@ -1,15 +1,10 @@
-from rest_framework import serializers
+from djoser.serializers import UserSerializer
+from django.contrib.auth import get_user_model
 
-from .models import FoodUser
+User = get_user_model()
 
 
-class FoodUserSerializer(serializers.ModelSerializer):
+class CustomUserSerializer(UserSerializer):
     class Meta:
-        fields = (
-            'username',
-            'password'
-            'email',
-            'first_name',
-            'last_name',
-        )
-        model = FoodUser
+        model = User
+        fields = '__all__' 
