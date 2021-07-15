@@ -21,7 +21,6 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'web']
 # Application definition
 
 INSTALLED_APPS = [
-    'users',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -31,6 +30,7 @@ INSTALLED_APPS = [
     'djoser',
     'rest_framework',
     'rest_framework_simplejwt',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -134,4 +134,9 @@ SIMPLE_JWT = {
     # Устанавливаем срок жизни токена
    'ACCESS_TOKEN_LIFETIME': timedelta(days=10),
    'AUTH_HEADER_TYPES': ('Bearer',),
+}
+DJOSER = {
+    'SERIALIZERS': {
+        'user_create': 'djoser.serializers.UserCreateSerializer',
+    },
 }

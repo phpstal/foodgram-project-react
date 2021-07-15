@@ -1,10 +1,8 @@
 from djoser.serializers import UserSerializer
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
+from users.models import CustomUser
 
 
 class CustomUserSerializer(UserSerializer):
     class Meta:
-        model = User
+        model = CustomUser
         fields = '__all__' 
