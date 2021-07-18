@@ -2,6 +2,7 @@ from django.db import models
 
 from users.models import CustomUser
 
+
 class Ingredient(models.Model):
     id = models.AutoField(primary_key=True, db_index=True)
     name = models.CharField(

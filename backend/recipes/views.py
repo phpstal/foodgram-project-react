@@ -1,10 +1,10 @@
-from .models import Recipe
 from rest_framework import viewsets
 from django_filters import CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
 
+from .models import Recipe, Tag
 from .permissions import IsAdmin, IsAuthor, IsReadOnly
-from .serializers import RecipeSerializer
+from .serializers import RecipeSerializer, TagSerializer
 
 
 class RecipeFilter(FilterSet):
@@ -24,7 +24,7 @@ class RecipeFilter(FilterSet):
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    permission_classes = (IsAdmin, IsAuthor, IsReadOnly)
+    #permission_classes = (IsAdmin, IsAuthor, IsReadOnly)
     serializer_class = RecipeSerializer
     #filter_backends = (DjangoFilterBackend, )
     #filterset_class = RecipeFilter
@@ -36,3 +36,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     #    context = super().get_serializer_context()
     #    context.update({'request': self.request})
     #    return context
+
+
+class TagViewSet(viewsets.ModelViewSet):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
