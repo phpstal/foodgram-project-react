@@ -2,9 +2,11 @@ from rest_framework import viewsets
 from django_filters import CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
 
-from .models import Recipe, Tag
+from .models import Recipe, Tag, Ingredient
 from .permissions import IsAdmin, IsAuthor, IsReadOnly
-from .serializers import RecipeSerializer, TagSerializer
+from .serializers import (RecipeSerializer, 
+                          TagSerializer,
+                          IngredientSerializer)
 
 
 class RecipeFilter(FilterSet):
@@ -41,3 +43,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+
+
+class IngredientViewSet(viewsets.ModelViewSet):
+    queryset = Ingredient.objects.all()
+    serializer_class = IngredientSerializer
