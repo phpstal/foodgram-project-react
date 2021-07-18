@@ -1,12 +1,20 @@
-from rest_framework import viewsets
+from rest_framework import filters, status, viewsets
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
 from django_filters import CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
 
-from .models import Recipe, Tag, Ingredient
+from .models import (Recipe, Tag, Ingredient, CustomUser, Subscription)
 from .permissions import IsAdmin, IsAuthor, IsReadOnly
+from users.serializers import CustomUserSerializer 
 from .serializers import (RecipeSerializer, 
                           TagSerializer,
-                          IngredientSerializer)
+                          IngredientSerializer,
+                          ShowFollowersSerializer,)
 
 
 class RecipeFilter(FilterSet):
@@ -48,3 +56,45 @@ class TagViewSet(viewsets.ModelViewSet):
 class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
+
+
+@api_view(['GET', ])
+@permission_classes([IsAuthenticated])
+def ShowFollows(request):
+    users = request.user.followers.all()
+    user_obj = []
+    for follow_obj in users:
+        user_obj.append(follow_obj.author)
+    paginator = PageNumberPagination()
+    paginator.page_size = 10
+    result_page = paginator.paginate_queryset(user_obj, request)
+    serializer = ShowFollowersSerializer(
+        result_page, many=True, context={'current_user': request.user})
+    return paginator.get_paginated_response(serializer.data)
+
+
+class FollowViewSet(APIView):
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request, user_id):
+        user = request.user
+        author = get_object_or_404(CustomUser, id=user_id)
+        if Subscription.objects.filter(user=user, author=author).exists():
+            return Response(
+                'Вы уже подписаны',
+                status=status.HTTP_400_BAD_REQUEST)
+        Subscription.objects.create(user=user, author=author)
+        serializer = CustomUserSerializer(author)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def delete(self, request, user_id):
+        user = request.user
+        author = CustomUser.objects.get(id=user_id)
+        try:
+            follow = Subscription.objects.get(user=user, author=author)
+            follow.delete()
+            return Response('Удалено',
+                            status=status.HTTP_204_NO_CONTENT)
+        except Exception:
+            return Response('Подписки не было',
+                            status=status.HTTP_400_BAD_REQUEST)

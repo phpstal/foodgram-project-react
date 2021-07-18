@@ -2,7 +2,7 @@ from djoser.serializers import UserCreateSerializer
 from .models import CustomUser
 
 
-class UserRegistrationSerializer(UserCreateSerializer):
+class CustomUserSerializer(UserCreateSerializer):
 
     class Meta:
         model = CustomUser

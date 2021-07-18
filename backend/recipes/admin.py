@@ -6,7 +6,8 @@ from .models import (Ingredient, Tag, Recipe, IngredientTemp, ShoppingCart,
 
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('name', 'measurement_unit')
-    list_filter = ('measurement_unit',)
+    search_fields = ('name',)
+    list_filter = ('name',)
     empty_value_display = '-пусто-'
 
 
@@ -20,7 +21,7 @@ class TagAdmin(admin.ModelAdmin):
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('name', 'author',)
     search_fields = ('author', 'name', 'tags',)
-    list_filter = ('tags',)
+    list_filter = ('author', 'name', 'tags',)
     empty_value_display = '-пусто-'
 
 

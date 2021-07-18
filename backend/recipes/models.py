@@ -63,7 +63,7 @@ class Recipe(models.Model):
         CustomUser,
         blank=False,
         on_delete=models.CASCADE,
-        related_name='author',
+        related_name='recipes',
         verbose_name='Автор рецепта',
     )
     ingredients = models.ManyToManyField(
@@ -73,12 +73,12 @@ class Recipe(models.Model):
         related_name='ingredients',
         verbose_name='Ингредиенты',
     )
-    is_favorited = models.BooleanField(
-        blank=False,
-    )
-    is_in_shopping_cart = models.BooleanField(
-        blank=False,
-    )
+#    is_favorited = models.BooleanField(
+#        blank=False,
+#    )
+#    is_in_shopping_cart = models.BooleanField(
+#        blank=False,
+#    )
     name = models.CharField(
         verbose_name='Заголовок',
         max_length=200,
@@ -170,16 +170,12 @@ class Favorite(models.Model):
 
 
 class Subscription(models.Model):
-    user = models.ForeignKey(
-        CustomUser, 
-        on_delete=models.CASCADE,
-        related_name='follower'
-    )
-    author = models.ForeignKey(
-        CustomUser, null=True,
-        on_delete=models.CASCADE,
-        related_name='following'
-    )
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
+                             related_name='followers')
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
+                               related_name='following')
     class Meta:
+        verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
-        ordering = ['id']
+    def __str__(self):
+        return f'{self.user} => {self.author}'
