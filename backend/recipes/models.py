@@ -1,8 +1,6 @@
 from django.db import models
-from django.contrib.auth import get_user_model
 
-User = get_user_model()
-
+from users.models import CustomUser
 
 class Ingredient(models.Model):
     id = models.AutoField(primary_key=True, db_index=True)
@@ -48,6 +46,9 @@ class Tag(models.Model):
         verbose_name_plural = 'Теги'
         ordering = ['name']
 
+    def __str__(self):
+        return self.name
+
 
 class Recipe(models.Model):
     id = models.AutoField(primary_key=True, db_index=True)
@@ -58,7 +59,7 @@ class Recipe(models.Model):
         verbose_name='Теги',
     )
     author = models.ForeignKey(
-        User,
+        CustomUser,
         blank=False,
         on_delete=models.CASCADE,
         related_name='author',
@@ -169,12 +170,12 @@ class Favorite(models.Model):
 
 class Subscription(models.Model):
     user = models.ForeignKey(
-        User, 
+        CustomUser, 
         on_delete=models.CASCADE,
         related_name='follower'
     )
     author = models.ForeignKey(
-        User, null=True,
+        CustomUser, null=True,
         on_delete=models.CASCADE,
         related_name='following'
     )

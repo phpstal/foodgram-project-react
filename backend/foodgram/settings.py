@@ -23,14 +23,16 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'web']
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'djoser',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'djoser',
-    'rest_framework',
-    'rest_framework_simplejwt',
+    'django.contrib.staticfiles',    
+    'django_filters',
     'users',
+    'recipes',
 ]
 
 MIDDLEWARE = [
@@ -127,16 +129,32 @@ REST_FRAMEWORK = {
     ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 6,
 }
+
+
 SIMPLE_JWT = {
     # Устанавливаем срок жизни токена
    'ACCESS_TOKEN_LIFETIME': timedelta(days=10),
    'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+
 DJOSER = {
-    'SERIALIZERS': {
-        'user_create': 'djoser.serializers.UserCreateSerializer',
+    'HIDE_USERS': False,
+    #'LOGIN_FIELD': 'email',
+    'PERMISSIONS': {
+            'user_list': [
+                'rest_framework.permissions.AllowAny'
+            ],
     },
+    'SERIALIZERS': {
+        'user_registration': 'users.serializers.UserRegistrationSerializer',
+    }
 }

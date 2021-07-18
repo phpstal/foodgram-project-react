@@ -1,20 +1,14 @@
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-
+from rest_framework.generics import ListCreateAPIView
+from rest_framework.permissions import IsAuthenticated
 from users.models import CustomUser
-from .serializers import CustomUserSerializer
+from users.serializers import UserRegistrationSerializer
 
 
+class UserViewSet(ListCreateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserRegistrationSerializer
+    permission_classes = (IsAuthenticated,)
 
-
-@api_view(['GET', 'POST'])
-def CustomUserView(request):
-    if request.method == 'POST':
-        serializer = CustomUserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    users = CustomUser.objects.all()
-    serializer = CustomUserSerializer(users, many=True)
-    return Response(serializer.data)
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save(user=user)

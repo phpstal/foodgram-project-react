@@ -1,8 +1,9 @@
-from djoser.serializers import UserSerializer
-from users.models import CustomUser
+from djoser.serializers import UserCreateSerializer
+from .models import CustomUser
 
 
-class CustomUserSerializer(UserSerializer):
+class UserRegistrationSerializer(UserCreateSerializer):
+
     class Meta:
         model = CustomUser
-        fields = '__all__' 
+        fields = '__all__'
