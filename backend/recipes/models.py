@@ -99,6 +99,7 @@ class Recipe(models.Model):
         blank=False,
         help_text='Укажите Время приготовления в минутах',
     )
+    #pub_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name_plural = 'Рецепты'
@@ -147,26 +148,21 @@ class ShoppingCart(models.Model):
         ordering = ['id']
 
 
-class Favorite(models.Model):
-    id = models.AutoField(primary_key=True, db_index=True)
-    name = models.CharField(
-        verbose_name='Название',
-        max_length=200,
-        blank=False,
-        help_text='Напишите название рецепта'
+class Favorites(models.Model):
+    user = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.CASCADE,
+        related_name='favorite_subscriber'
     )
-    image = models.ImageField(
-        upload_to='image/', 
-        null=False
+    recipe = models.ForeignKey(
+        Recipe, 
+        on_delete=models.CASCADE, 
+        related_name='favorite_recipe'
     )
-    cooking_time = models.PositiveSmallIntegerField(
-        verbose_name='Время приготовления в минутах',
-        blank=False,
-        help_text='Укажите Время приготовления в минутах',
-    )
+
     class Meta:
-        verbose_name_plural = 'Избранные рецепты'
-        ordering = ['id']
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранное'
 
 
 class Subscription(models.Model):
@@ -174,8 +170,10 @@ class Subscription(models.Model):
                              related_name='followers')
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE,
                                related_name='following')
+
     class Meta:
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
+
     def __str__(self):
         return f'{self.user} => {self.author}'

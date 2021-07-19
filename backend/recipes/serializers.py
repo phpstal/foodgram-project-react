@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Recipe, Favorite, Tag, Ingredient
+from .models import Recipe, Favorites, Tag, Ingredient
 from users.models import CustomUser
 
 
@@ -22,6 +22,13 @@ class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
         fields = '__all__'
+
+
+class AddFavouriteRecipeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time')
 
 
 class ShowFollowerRecipeSerializer(serializers.ModelSerializer):
@@ -73,17 +80,3 @@ class ShowRecipeAddedSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         photo_url = obj.image.url
         return request.build_absolute_uri(photo_url)
-
-
-class FavoriteSerializer(serializers.ModelSerializer):
-    recipe = serializers.PrimaryKeyRelatedField(queryset=Recipe.objects.all())
-    user = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all())
-    class Meta:
-        model = Favorite
-        fields = ('user', 'recipe')
-    def to_representation(self, instance):
-        request = self.context.get('request')
-        return ShowRecipeAddedSerializer(
-            instance.recipe,
-            context={'request': request}
-        ).data
