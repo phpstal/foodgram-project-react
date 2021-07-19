@@ -9,7 +9,7 @@ from django_filters import CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import (Recipe, Tag, Ingredient, CustomUser, Subscription,
-                     Favorites)
+                     Favorites, ShoppingCart)
 from .permissions import IsAdmin, IsAuthor, IsReadOnly
 from users.serializers import CustomUserSerializer 
 from .serializers import (RecipeSerializer, 
@@ -123,4 +123,31 @@ class FavouriteViewSet(APIView):
             return Response('Рецепт не был в избранном',
                             status=status.HTTP_400_BAD_REQUEST)
         Favorites.objects.get(user=user, recipe=recipe).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ShoppingListViewSet(APIView):
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request, recipe_id):
+        user = request.user
+        recipe = get_object_or_404(Recipe, id=recipe_id)
+        if ShoppingCart.objects.filter(user=user, purchase=recipe).exists():
+            return Response(
+                'Вы уже добавили рецепт в список покупок',
+                status=status.HTTP_400_BAD_REQUEST)
+        ShoppingCart.objects.create(user=user, purchase=recipe)
+        serializer = AddFavouriteRecipeSerializer(recipe)
+        return Response(
+            serializer.data,
+            status=status.HTTP_201_CREATED)
+
+    def delete(self, request, recipe_id):
+        user = request.user
+        recipe = get_object_or_404(Recipe, id=recipe_id)
+        
+        if not ShoppingCart.objects.get(user=user, purchase=recipe):
+            return Response('Рецепта нет в корзине',
+                            status=status.HTTP_400_BAD_REQUEST)
+        ShoppingCart.objects.get(user=user, purchase=recipe).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

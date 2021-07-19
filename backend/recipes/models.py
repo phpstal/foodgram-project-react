@@ -127,25 +127,16 @@ class IngredientTemp(models.Model):
 
 
 class ShoppingCart(models.Model):
-    id = models.AutoField(primary_key=True, db_index=True)
-    name = models.CharField(
-        verbose_name='Название',
-        max_length=200,
-        blank=False,
-        help_text='Напишите название рецепта'
-    )
-    image = models.ImageField(
-        upload_to='image/', 
-        null=False
-    )
-    cooking_time = models.PositiveSmallIntegerField(
-        verbose_name='Время приготовления в минутах',
-        blank=False,
-        help_text='Укажите Время приготовления в минутах',
-    )
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE,
+        related_name='purchases', verbose_name='Пользователь')
+    purchase = models.ForeignKey(
+        Recipe, on_delete=models.CASCADE,
+        related_name='customers', verbose_name='Покупка')
+
     class Meta:
-        verbose_name_plural = 'Корзина рецептов'
-        ordering = ['id']
+        verbose_name = 'Покупка'
+        verbose_name_plural = 'Покупки'
 
 
 class Favorites(models.Model):
