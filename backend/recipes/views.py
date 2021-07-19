@@ -13,11 +13,12 @@ from .models import (Recipe, Tag, Ingredient, CustomUser, Subscription,
                      Favorites, ShoppingCart)
 from .permissions import IsAdmin, IsAuthor, IsReadOnly
 from users.serializers import CustomUserSerializer 
-from .serializers import (RecipeSerializer, 
-                          TagSerializer,
+from .serializers import (TagSerializer,
                           IngredientSerializer,
                           ShowFollowersSerializer,
-                          AddFavouriteRecipeSerializer)
+                          AddFavouriteRecipeSerializer,
+                          ListRecipeSerializer,
+                          CreateRecipeSerializer)
 
 
 class RecipeFilter(FilterSet):
@@ -35,20 +36,35 @@ class RecipeFilter(FilterSet):
         fields = ['tags', 'is_favorited', 'is_in_shopping_cart', 'author']
 
 
-class RecipeViewSet(viewsets.ModelViewSet):
+class RecipesViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all().order_by('-id')
-    #permission_classes = (IsAdmin, IsAuthor, IsReadOnly)
-    serializer_class = RecipeSerializer
-    #filter_backends = (DjangoFilterBackend, )
-    #filterset_class = RecipeFilter
-    #def get_serializer_class(self):
-    #    if self.request.method == 'GET':
-    #        return ShowRecipeSerializer
-    #    return CreateRecipeSerializer
-    #def get_serializer_context(self):
-    #    context = super().get_serializer_context()
-    #    context.update({'request': self.request})
-    #    return context
+    filter_backends = (DjangoFilterBackend,)
+    filter_class = RecipeFilter
+
+    def get_permissions(self):
+        if self.action == 'create':
+            return IsAuthenticated(),
+        if self.action in ['destroy', 'update', 'partial_update']:
+            return IsAuthor(),
+        return AllowAny(),
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return ListRecipeSerializer
+        if self.action == 'retrieve':
+            return ListRecipeSerializer
+        return CreateRecipeSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED,
+                        headers=headers)
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 
 class TagViewSet(viewsets.ModelViewSet):

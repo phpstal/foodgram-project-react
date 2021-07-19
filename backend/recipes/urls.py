@@ -1,17 +1,17 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from .views import (RecipeViewSet, TagViewSet, IngredientViewSet,
+from .views import (TagViewSet, IngredientViewSet,
                     ShowSubscription, SubscriptionViewSet, FavouriteViewSet,
-                    ShoppingListViewSet, DownloadShoppingCart)
+                    ShoppingListViewSet, DownloadShoppingCart, RecipesViewSet)
 
 
 router_v1 = DefaultRouter()
 
-router_v1.register('recipes', RecipeViewSet)
+router_v1.register('recipes', RecipesViewSet, basename='recipes')
 router_v1.register('tags', TagViewSet)
 router_v1.register('ingredients', IngredientViewSet)
-router_v1.register('', RecipeViewSet)
+router_v1.register('', RecipesViewSet, basename='recipes')
 
 
 urlpatterns = [
