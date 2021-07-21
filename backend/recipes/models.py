@@ -73,12 +73,6 @@ class Recipe(models.Model):
         related_name='ingredients',
         verbose_name='Ингредиенты',
     )
-#    is_favorited = models.BooleanField(
-#        blank=False,
-#    )
-#    is_in_shopping_cart = models.BooleanField(
-#        blank=False,
-#    )
     name = models.CharField(
         verbose_name='Заголовок',
         max_length=200,
@@ -99,7 +93,6 @@ class Recipe(models.Model):
         blank=False,
         help_text='Укажите Время приготовления в минутах',
     )
-    #pub_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name_plural = 'Рецепты'
