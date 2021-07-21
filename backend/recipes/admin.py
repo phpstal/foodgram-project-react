@@ -20,8 +20,8 @@ class TagAdmin(admin.ModelAdmin):
 
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('name', 'author',)
-    search_fields = ('author', 'name', 'tags',)
-    list_filter = ('author', 'name', 'tags',)
+    search_fields = ('author', 'name', 'tags', 'ingredients')
+    list_filter = ('author', 'name', 'tags', 'ingredients')
     empty_value_display = '-пусто-'
 
 

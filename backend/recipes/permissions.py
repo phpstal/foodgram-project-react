@@ -31,3 +31,12 @@ class IsReadOnly(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return request.method in SAFE_METHODS
+
+
+class IsAllowAny(BasePermission):
+    def get_permissions(self):
+        if self.action == 'create':
+            return IsAuthenticated()
+        if self.action in ['destroy', 'update', 'partial_update']:
+            return IsAuthor()
+        return AllowAny()

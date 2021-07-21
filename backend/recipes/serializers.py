@@ -70,7 +70,6 @@ class ShowFollowerRecipeSerializer(serializers.ModelSerializer):
 
 
 class ShowFollowersSerializer(serializers.ModelSerializer):
-
     recipes = ShowFollowerRecipeSerializer(many=True, read_only=True)
     recipes_count = serializers.SerializerMethodField('count_author_recipes')
     is_subscribed = serializers.SerializerMethodField('check_if_subscribed')
@@ -81,26 +80,26 @@ class ShowFollowersSerializer(serializers.ModelSerializer):
                   'last_name', 'is_subscribed', 'recipes', 'recipes_count')
 
     def count_author_recipes(self, user):
-        return len(user.recipes.all())
+        return user.recipes.all().count()
 
     def check_if_subscribed(self, user):
         current_user = self.context.get('current_user')
         other_user = user.following.all()
         if user.is_anonymous:
             return False
-        if len(other_user) == 0:
+        if other_user.count() == 0:
             return False
-        if current_user.id in [i.user.id for i in other_user]:
-            return True
-        return False
+        return current_user in other_user
 
 
 class ShowRecipeAddedSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
+
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
         read_only_fields = fields
+
     def get_image(self, obj):
         request = self.context.get('request')
         photo_url = obj.image.url
@@ -118,11 +117,9 @@ class ListRecipeUserSerializer(serializers.ModelSerializer):
     def check_if_is_subscribed(self, user):
         current_user = self.context['request'].user
         other_user = user.following.all()
-        if len(other_user) == 0:
+        if other_user.count() == 0:
             return False
-        if current_user.id in [i.user.id for i in other_user]:
-            return True
-        return False
+        return current_user.exists()
 
 
 class ListRecipeSerializer(serializers.ModelSerializer):
@@ -142,17 +139,11 @@ class ListRecipeSerializer(serializers.ModelSerializer):
         user = request_data.user
         if user.is_anonymous:
             return 0
-        user_recipes_favourited = user.favorite_subscriber.all()
-        if recipe in [i.recipe for i in user_recipes_favourited]:
-            return 1
-        return 0
+        return int(recipe in user.favorite.all())
 
     def check_if_is_in_shopping_cart(self, recipe):
         request_data = self.context['request']
         user = request_data.user
         if user.is_anonymous:
             return 0
-        user_recipes_in_shopping_cart = user.purchases.all()
-        if recipe in [i.purchase for i in user_recipes_in_shopping_cart]:
-            return 1
-        return 0
+        return int(recipe in user.purchases.all())

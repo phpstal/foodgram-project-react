@@ -17,9 +17,13 @@ class Ingredient(models.Model):
         max_length=200,
         help_text='Укажите единицу измерения'
     )
+
     class Meta:
         verbose_name_plural = 'Ингредиенты'
         ordering = ['name']
+
+    def __str__(self):
+        return self.name
 
 
 class Tag(models.Model):
@@ -42,6 +46,7 @@ class Tag(models.Model):
         help_text=('Укажите слаг тега. Используйте только латиницу, цифры, '
                    'дефисы и знаки подчёркивания')
     )
+
     class Meta:
         verbose_name_plural = 'Теги'
         ordering = ['name']
@@ -54,7 +59,7 @@ class Recipe(models.Model):
     tags = models.ManyToManyField(
         Tag,
         blank=True,
-        related_name='tags_recipes',
+        related_name='recipes',
         verbose_name='Теги',
     )
     author = models.ForeignKey(
@@ -68,7 +73,7 @@ class Recipe(models.Model):
         Ingredient,
         blank=True,
         through='IngredientTemp',
-        related_name='ingredients_recipes',
+        related_name='recipes',
         verbose_name='Ингредиенты',
     )
     name = models.CharField(
@@ -79,7 +84,7 @@ class Recipe(models.Model):
     )
     image = models.ImageField(
         upload_to='image/', 
-        null=False
+        blank=True
     )
     text = models.TextField(
         verbose_name='Описание рецепта',
@@ -91,11 +96,22 @@ class Recipe(models.Model):
         blank=False,
         help_text='Укажите Время приготовления в минутах',
     )
-    pub_date = models.DateTimeField(auto_now_add=True) 
+    pub_date = models.DateTimeField(auto_now_add=True)
+    is_favorited = models.BooleanField(
+        blank=True,
+        null=True
+    )
+    is_in_shopping_cart = models.BooleanField(
+        blank=True,
+        null=True
+    )
 
     class Meta:
         verbose_name_plural = 'Рецепты'
         ordering = ['id']
+
+    def __str__(self):
+        return self.name
 
 
 class IngredientTemp(models.Model):
@@ -135,12 +151,12 @@ class Favorite(models.Model):
     user = models.ForeignKey(
         CustomUser, 
         on_delete=models.CASCADE,
-        related_name='favorite_subscriber'
+        related_name='favorite'
     )
     recipe = models.ForeignKey(
         Recipe, 
         on_delete=models.CASCADE, 
-        related_name='favorite_recipe'
+        related_name='favorite'
     )
 
     class Meta:
