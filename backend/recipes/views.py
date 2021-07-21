@@ -1,24 +1,22 @@
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django_filters import CharFilter, FilterSet
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponse
-from django_filters import CharFilter, FilterSet
-from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.views import APIView
 
-from .models import (Recipe, Tag, Ingredient, CustomUser, Subscription,
-                     Favorite, ShoppingCart)
+from users.serializers import CustomUserSerializer
+
+from .models import (CustomUser, Favorite, Ingredient, Recipe, ShoppingCart,
+                     Subscription, Tag)
 from .permissions import IsAdmin, IsAuthor, IsReadOnly
-from users.serializers import CustomUserSerializer 
-from .serializers import (TagSerializer,
-                          IngredientSerializer,
-                          ShowFollowersSerializer,
-                          AddFavouriteRecipeSerializer,
-                          ListRecipeSerializer,
-                          CreateRecipeSerializer)
+from .serializers import (AddFavouriteRecipeSerializer, CreateRecipeSerializer,
+                          IngredientSerializer, ListRecipeSerializer,
+                          ShowFollowersSerializer, TagSerializer)
 
 
 class RecipeFilter(FilterSet):
