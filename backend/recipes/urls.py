@@ -5,6 +5,8 @@ from .views import (DownloadShoppingCart, FavouriteViewSet, IngredientViewSet,
                     RecipesViewSet, ShoppingListViewSet, show_subscription,
                     SubscriptionViewSet, TagViewSet)
 
+
+V_API = 'v1.0/'
 router_v1 = DefaultRouter()
 
 router_v1.register('recipes', RecipesViewSet, basename='recipes')
@@ -14,10 +16,10 @@ router_v1.register('', RecipesViewSet, basename='recipes')
 
 
 urlpatterns = [
-    path('users/subscriptions/', show_subscription),
-    path('users/<int:user_id>/subscribe/', SubscriptionViewSet.as_view()),
-    path('recipes/<int:recipe_id>/favorite/', FavouriteViewSet.as_view()),
-    path('recipes/<int:recipe_id>/shopping_cart/', ShoppingListViewSet.as_view()),
-    path('recipes/download_shopping_cart/', DownloadShoppingCart.as_view()),
-    path('', include(router_v1.urls)),
+    path(V_API+'users/subscriptions/', show_subscription),
+    path(V_API+'users/<int:user_id>/subscribe/', SubscriptionViewSet.as_view()),
+    path(V_API+'recipes/<int:recipe_id>/favorite/', FavouriteViewSet.as_view()),
+    path(V_API+'recipes/<int:recipe_id>/shopping_cart/', ShoppingListViewSet.as_view()),
+    path(V_API+'recipes/download_shopping_cart/', DownloadShoppingCart.as_view()),
+    path(V_API, include(router_v1.urls)),
 ]
