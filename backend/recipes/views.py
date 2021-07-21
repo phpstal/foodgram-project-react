@@ -150,25 +150,20 @@ class DownloadShoppingCart(APIView):
                     buying_list[name]['amount'] = (buying_list[name]['amount']
                                                    + amount)
 
-        wishlist = []
+        ingred = []
         for item in buying_list:
-            wishlist.append(f'{item} - {buying_list[item]["amount"]} '
+            ingred.append(f'{item} - {buying_list[item]["amount"]} '
                             f'{buying_list[item]["measurement_unit"]} \n')
-        response = HttpResponse(wishlist, 'Content-Type: text/plain')
-        response['Content-Disposition'] = 'attachment; filename="wishlist.txt"'
+        response = HttpResponse(ingred, 'Content-Type: text/plain')
+        response['Content-Disposition'] = 'attachment; filename="ingred.txt"'
         return response
 
 
 @api_view(['GET', ])
 @permission_classes([IsAuthenticated])
 def show_subscription(request):
-    users = request.user.followers.all()
-    user_obj = []
-    for follow_obj in users:
-        user_obj.append(follow_obj.author)
-    paginator = PageNumberPagination()
-    paginator.page_size = 10
-    result_page = paginator.paginate_queryset(user_obj, request)
+    user = request.user
+    user_obj = [follow_obj.author for follow_obj in user.followers.all()]
     serializer = ShowFollowersSerializer(
-        result_page, many=True, context={'current_user': request.user})
-    return paginator.get_paginated_response(serializer.data)
+        user_obj, many=True, context={'current_user': user})
+    return Response(serializer.data, status=status.HTTP_200_OK)
