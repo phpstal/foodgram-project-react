@@ -119,7 +119,7 @@ class ListRecipeUserSerializer(serializers.ModelSerializer):
         other_user = user.following.all()
         if other_user.count() == 0:
             return False
-        return current_user.exists()
+        return current_user in other_user
 
 
 class ListRecipeSerializer(serializers.ModelSerializer):

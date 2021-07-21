@@ -12,8 +12,8 @@ from users.serializers import CustomUserSerializer
 
 from .filtes import RecipeFilter
 from .models import (CustomUser, Favorite, Ingredient, Recipe, ShoppingCart,
-                     Subscription, Tag)
-from .permissions import IsAdmin, IsAuthor, IsReadOnly, IsAllowAny
+                     Subscription, Tag, IngredientTemp)
+from .permissions import IsAllowAny
 from .serializers import (AddFavouriteRecipeSerializer, CreateRecipeSerializer,
                           IngredientSerializer, ListRecipeSerializer,
                           ShowFollowersSerializer, TagSerializer)
@@ -117,7 +117,10 @@ class ShoppingListViewSet(APIView):
         user = request.user
         recipe = get_object_or_404(Recipe, id=recipe_id)
         
-        if not ShoppingCart.objects.filter(user=user, purchase=recipe).exists():
+        if not ShoppingCart.objects.filter(
+            user=user, 
+            purchase=recipe
+        ).exists():
             return Response('Рецепта нет в корзине',
                             status=status.HTTP_400_BAD_REQUEST)
         ShoppingCart.objects.filter(user=user, purchase=recipe).delete()
@@ -130,31 +133,27 @@ class DownloadShoppingCart(APIView):
     def get(self, request):
         user = request.user
         shopping_cart = user.purchases.all()
-
-        recipes = []
-        for i in shopping_cart:
-            recipes.append(i.purchase)
-
-        ingredients = []
-        for recipe in recipes:
-            ingredients.append(recipe.ingredients.all())
-
-        new_ingredients = []
-        for ingredient in ingredients:
-            for item in ingredient:
-                new_ingredients.append(item)
-
-        ingredients_dict = {}
-        for ingredient in new_ingredients:
-            if ingredient in ingredients_dict:
-                ingredients_dict[ingredient] += ingredient
-            else:
-                ingredients_dict[ingredient] = ingredient
+        buying_list = {}
+        for record in shopping_cart:
+            recipe = record.purchase
+            ingredients = IngredientTemp.objects.filter(recipe=recipe)
+            for ingredient in ingredients:
+                amount = ingredient.amount
+                name = ingredient.ingredient.name
+                measurement_unit = ingredient.ingredient.measurement_unit
+                if name not in buying_list:
+                    buying_list[name] = {
+                        'measurement_unit': measurement_unit,
+                        'amount': amount
+                    }
+                else:
+                    buying_list[name]['amount'] = (buying_list[name]['amount']
+                                                   + amount)
 
         wishlist = []
-        for key, value in ingredients_dict.items():
-            wishlist.append(f'{key.name} - {value} {key.name} \n')
-
+        for item in buying_list:
+            wishlist.append(f'{item} - {buying_list[item]["amount"]} '
+                            f'{buying_list[item]["measurement_unit"]} \n')
         response = HttpResponse(wishlist, 'Content-Type: text/plain')
         response['Content-Disposition'] = 'attachment; filename="wishlist.txt"'
         return response
