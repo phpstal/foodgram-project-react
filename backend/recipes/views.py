@@ -10,7 +10,7 @@ from django_filters import CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import (Recipe, Tag, Ingredient, CustomUser, Subscription,
-                     Favorites, ShoppingCart)
+                     Favorite, ShoppingCart)
 from .permissions import IsAdmin, IsAuthor, IsReadOnly
 from users.serializers import CustomUserSerializer 
 from .serializers import (TagSerializer,
@@ -122,11 +122,11 @@ class FavouriteViewSet(APIView):
     def get(self, request, recipe_id):
         user = request.user
         recipe = get_object_or_404(Recipe, id=recipe_id)
-        if Favorites.objects.filter(user=user, recipe=recipe).exists():
+        if Favorite.objects.filter(user=user, recipe=recipe).exists():
             return Response(
                 'Вы уже добавили рецепт в избранное',
                 status=status.HTTP_400_BAD_REQUEST)
-        Favorites.objects.create(user=user, recipe=recipe)
+        Favorite.objects.create(user=user, recipe=recipe)
         serializer = AddFavouriteRecipeSerializer(recipe)
         return Response(
             serializer.data,
@@ -136,10 +136,10 @@ class FavouriteViewSet(APIView):
         user = request.user
         recipe = get_object_or_404(Recipe, id=recipe_id)
         
-        if not Favorites.objects.get(user=user, recipe=recipe):
+        if not Favorite.objects.get(user=user, recipe=recipe):
             return Response('Рецепт не был в избранном',
                             status=status.HTTP_400_BAD_REQUEST)
-        Favorites.objects.get(user=user, recipe=recipe).delete()
+        Favorite.objects.get(user=user, recipe=recipe).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

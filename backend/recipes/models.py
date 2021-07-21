@@ -1,10 +1,10 @@
 from django.db import models
+from django.db.models import fields
 
 from users.models import CustomUser
 
 
 class Ingredient(models.Model):
-    id = models.AutoField(primary_key=True, db_index=True)
     name = models.CharField(
         verbose_name='Название ингредиента',
         blank=False,
@@ -37,7 +37,6 @@ class Tag(models.Model):
     )
     slug = models.SlugField(
         verbose_name='Слаг тега',
-        null=True,
         max_length=200,
         unique=True,
         help_text=('Укажите слаг тега. Используйте только латиницу, цифры, '
@@ -52,11 +51,10 @@ class Tag(models.Model):
 
 
 class Recipe(models.Model):
-    id = models.AutoField(primary_key=True, db_index=True)
     tags = models.ManyToManyField(
         Tag,
         blank=True,
-        related_name='tags',
+        related_name='tags_recipes',
         verbose_name='Теги',
     )
     author = models.ForeignKey(
@@ -70,7 +68,7 @@ class Recipe(models.Model):
         Ingredient,
         blank=True,
         through='IngredientTemp',
-        related_name='ingredients',
+        related_name='ingredients_recipes',
         verbose_name='Ингредиенты',
     )
     name = models.CharField(
@@ -93,6 +91,7 @@ class Recipe(models.Model):
         blank=False,
         help_text='Укажите Время приготовления в минутах',
     )
+    pub_date = models.DateTimeField(auto_now_add=True) 
 
     class Meta:
         verbose_name_plural = 'Рецепты'
@@ -132,7 +131,7 @@ class ShoppingCart(models.Model):
         verbose_name_plural = 'Покупки'
 
 
-class Favorites(models.Model):
+class Favorite(models.Model):
     user = models.ForeignKey(
         CustomUser, 
         on_delete=models.CASCADE,
@@ -156,6 +155,10 @@ class Subscription(models.Model):
                                related_name='following')
 
     class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'author'], 
+                                    name='subscription_unique'),
+        ]
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
 
