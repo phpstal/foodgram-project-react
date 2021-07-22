@@ -1,22 +1,21 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, status, viewsets
+from rest_framework import status, viewsets
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from users.serializers import CustomUserSerializer
 
 from .filtes import RecipeFilter
-from .models import (CustomUser, Favorite, Ingredient, Recipe, ShoppingCart,
-                     Subscription, Tag, IngredientTemp)
+from .models import (CustomUser, Favorite, Ingredient, IngredientTemp, Recipe,
+                     ShoppingCart, Subscription, Tag)
 from .permissions import IsAllowAny
 from .serializers import (AddFavouriteRecipeSerializer, CreateRecipeSerializer,
                           IngredientSerializer, ListRecipeSerializer,
-                          ShowFollowersSerializer, TagSerializer)
+                          ShowFollowersSerializer, TagSerializer, Temp)
 
 
 @permission_classes([IsAllowAny])
@@ -26,9 +25,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
     filter_class = RecipeFilter
 
     def get_serializer_class(self):
-        if self.action == 'list':
-            return ListRecipeSerializer
-        if self.action == 'retrieve':
+        if self.action in ('list', 'retrieve'):
             return ListRecipeSerializer
         return CreateRecipeSerializer
 
@@ -163,7 +160,8 @@ class DownloadShoppingCart(APIView):
 @permission_classes([IsAuthenticated])
 def show_subscription(request):
     user = request.user
-    user_obj = [follow_obj.author for follow_obj in user.followers.all()]
-    serializer = ShowFollowersSerializer(
+    #user_obj = [follow_obj.author for follow_obj in user.followers.all()]
+    user_obj = CustomUser.objects.filter(following=user)
+    serializer = Temp(
         user_obj, many=True, context={'current_user': user})
     return Response(serializer.data, status=status.HTTP_200_OK)

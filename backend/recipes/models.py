@@ -97,18 +97,10 @@ class Recipe(models.Model):
         help_text='Укажите Время приготовления в минутах',
     )
     pub_date = models.DateTimeField(auto_now_add=True)
-    is_favorited = models.BooleanField(
-        blank=True,
-        null=True
-    )
-    is_in_shopping_cart = models.BooleanField(
-        blank=True,
-        null=True
-    )
 
     class Meta:
         verbose_name_plural = 'Рецепты'
-        ordering = ['id']
+        ordering = ['-pub_date']
 
     def __str__(self):
         return self.name

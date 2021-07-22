@@ -1,9 +1,10 @@
+from django.db.models import fields
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
 from users.models import CustomUser
 
-from .models import Ingredient, Recipe, Tag
+from .models import Ingredient, Recipe, Subscription, Tag
 
 
 class ShowFollowerRecipeSerializer(serializers.ModelSerializer):
@@ -83,13 +84,9 @@ class ShowFollowersSerializer(serializers.ModelSerializer):
         return user.recipes.all().count()
 
     def check_if_subscribed(self, user):
-        current_user = self.context.get('current_user')
-        other_user = user.following.all()
         if user.is_anonymous:
-            return False
-        if other_user.count() == 0:
-            return False
-        return current_user in other_user
+            return False        
+        return user.following.all().exists()
 
 
 class ShowRecipeAddedSerializer(serializers.ModelSerializer):
@@ -115,11 +112,7 @@ class ListRecipeUserSerializer(serializers.ModelSerializer):
                   'first_name', 'last_name', 'is_subscribed')
 
     def check_if_is_subscribed(self, user):
-        current_user = self.context['request'].user
-        other_user = user.following.all()
-        if other_user.count() == 0:
-            return False
-        return current_user in other_user
+        return user.following.all().exists()
 
 
 class ListRecipeSerializer(serializers.ModelSerializer):
@@ -138,12 +131,19 @@ class ListRecipeSerializer(serializers.ModelSerializer):
         request_data = self.context['request']
         user = request_data.user
         if user.is_anonymous:
-            return 0
-        return int(recipe in user.favorite.all())
+            return False
+        return user.favorite.all().exists()
 
     def check_if_is_in_shopping_cart(self, recipe):
         request_data = self.context['request']
         user = request_data.user
         if user.is_anonymous:
-            return 0
-        return int(recipe in user.purchases.all())
+            return False
+        return user.purchases.all().exists()
+
+
+class Temp(serializers.ModelSerializer):
+
+    class Meta:
+        model = Subscription
+        fields = '__all__'
