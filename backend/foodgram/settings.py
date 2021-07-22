@@ -20,7 +20,6 @@ INSTALLED_APPS = [
     'django_filters',
     'users',
     'recipes',
-    'debug_toolbar'
 ]
 
 MIDDLEWARE = [
@@ -31,7 +30,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware'
 ]
 
 ROOT_URLCONF = 'foodgram.urls'
@@ -126,7 +124,3 @@ DJOSER = {
         'user_registration': 'users.serializers.UserRegistrationSerializer',
     }
 }
-INTERNAL_IPS = [
-    '127.0.0.1',
-    'localhost',
-]

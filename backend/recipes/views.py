@@ -156,12 +156,12 @@ class DownloadShoppingCart(APIView):
         return response
 
 
-@api_view(['GET', ])
-@permission_classes([IsAuthenticated])
-def show_subscription(request):
-    user = request.user
-    #user_obj = [follow_obj.author for follow_obj in user.followers.all()]
-    user_obj = CustomUser.objects.filter(following=user)
-    serializer = Temp(
-        user_obj, many=True, context={'current_user': user})
-    return Response(serializer.data, status=status.HTTP_200_OK)
+@api_view(['GET', ]) 
+@permission_classes([IsAuthenticated]) 
+def show_subscription(request): 
+    authors = CustomUser.objects.filter(
+        id__in=Subscription.objects.values('author_id')
+    )
+    serializer = ShowFollowersSerializer( 
+        authors, many=True, context={'current_user': request.user}) 
+    return Response(serializer.data, status=status.HTTP_200_OK) 
