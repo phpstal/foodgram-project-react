@@ -15,7 +15,7 @@ from .models import (CustomUser, Favorite, Ingredient, IngredientTemp, Recipe,
 from .permissions import IsAllowAny
 from .serializers import (AddFavouriteRecipeSerializer, CreateRecipeSerializer,
                           IngredientSerializer, ListRecipeSerializer,
-                          ShowFollowersSerializer, TagSerializer, Temp)
+                          ShowFollowersSerializer, TagSerializer)
 
 
 @permission_classes([IsAllowAny])

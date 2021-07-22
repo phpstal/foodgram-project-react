@@ -140,10 +140,3 @@ class ListRecipeSerializer(serializers.ModelSerializer):
         if user.is_anonymous:
             return False
         return user.purchases.all().exists()
-
-
-class Temp(serializers.ModelSerializer):
-
-    class Meta:
-        model = Subscription
-        fields = '__all__'
