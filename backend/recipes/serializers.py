@@ -86,7 +86,7 @@ class ShowFollowersSerializer(serializers.ModelSerializer):
     def check_if_subscribed(self, user):
         if user.is_anonymous:
             return False        
-        return user.following.all().exists()
+        return user.following.exists()
 
 
 class ShowRecipeAddedSerializer(serializers.ModelSerializer):
@@ -112,7 +112,7 @@ class ListRecipeUserSerializer(serializers.ModelSerializer):
                   'first_name', 'last_name', 'is_subscribed')
 
     def check_if_is_subscribed(self, user):
-        return user.following.all().exists()
+        return user.following.exists()
 
 
 class ListRecipeSerializer(serializers.ModelSerializer):
@@ -132,11 +132,11 @@ class ListRecipeSerializer(serializers.ModelSerializer):
         user = request_data.user
         if user.is_anonymous:
             return False
-        return user.favorite.all().exists()
+        return user.favorite.exists()
 
     def check_if_is_in_shopping_cart(self, recipe):
         request_data = self.context['request']
         user = request_data.user
         if user.is_anonymous:
             return False
-        return user.purchases.all().exists()
+        return user.purchases.exists()
