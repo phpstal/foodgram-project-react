@@ -86,7 +86,6 @@ class ShowFollowersSerializer(serializers.ModelSerializer):
     def check_if_subscribed(self, user):
         if user.is_anonymous:
             return False        
-        return user.following.exists()
 
 
 class ShowRecipeAddedSerializer(serializers.ModelSerializer):
