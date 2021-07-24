@@ -9,16 +9,29 @@ services:
 #    ports: 
 #      - 5433:5432
 #    restart: always
-  web:
-    build: 
+  backend:
+    build:
       context: ../backend
       dockerfile: Dockerfile
+    restart: always
+    command: gunicorn foodgram.wsgi:application --bind 0.0.0.0:8000
+    ports:
+      - '8000:8000'
+    #depends_on:
+    # - db
+    volumes:
+      - static_files:/code/static/
+      - media_files:/code/media/
+    env_file:
+      - ../backend/.env
+
   frontend:
     build:
       context: ../frontend
       dockerfile: Dockerfile
     volumes:
       - ../frontend/:/app/result_build/
+
   nginx:
     image: nginx:1.19.3
     ports:
@@ -28,3 +41,10 @@ services:
       - ../frontend/build:/usr/share/nginx/html/
       - ../docs/redoc.html:/usr/share/nginx/html/api/docs/redoc.html
       - ../docs/openapi-schema.yml:/usr/share/nginx/html/api/docs/openapi-schema.yml
+      - static_files:/static/
+      - media_files:/media/
+
+volumes: 
+    #postgres_data:
+    static_files:
+    media_files:
