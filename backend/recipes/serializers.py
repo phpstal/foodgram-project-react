@@ -7,6 +7,13 @@ from users.models import CustomUser
 from .models import Ingredient, Recipe, Subscription, Tag
 
 
+class CustomUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CustomUser
+        fields = '__all__'
+
+
 class ShowFollowerRecipeSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(
         max_length=None,

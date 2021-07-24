@@ -4,7 +4,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
 from rest_framework import permissions
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import (IsAuthenticated, 
+                                        IsAuthenticatedOrReadOnly,
+                                        AllowAny)
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -16,7 +18,17 @@ from .models import (CustomUser, Favorite, Ingredient, IngredientTemp, Recipe,
 from .permissions import IsAllowAny
 from .serializers import (AddFavouriteRecipeSerializer, CreateRecipeSerializer,
                           IngredientSerializer, ListRecipeSerializer,
-                          ShowFollowersSerializer, TagSerializer)
+                          ShowFollowersSerializer, TagSerializer,
+                          CustomUserSerializer)
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    permission_classes = (AllowAny,)
+
+    def get(self, user_id):
+        author = get_object_or_404(CustomUser, id=user_id)
+        serializer = CustomUserSerializer(author)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @permission_classes([IsAllowAny])
