@@ -5,7 +5,7 @@ from users.models import CustomUser
 from users.serializers import CustomUserSerializer
 
 
-class UserViewSet(ListCreateAPIView):
+class CustomUserAdmin(ListCreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = (IsAuthenticated,)

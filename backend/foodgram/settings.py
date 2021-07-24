@@ -5,8 +5,8 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-v=gmh7^-2)*4-nvp)2^+zny&yqjzkyb@xjh)2fo@q+y(z$ffjv'
-DEBUG = False
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'web', '178.154.221.192']
+DEBUG = True
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'web']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -53,6 +53,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'foodgram.wsgi.application'
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': os.environ.get('DB_ENGINE'),
+#        'NAME': os.environ.get('DB_NAME'),
+#        'USER': os.environ.get('POSTGRES_USER'),
+#        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+#        'HOST': os.environ.get('DB_HOST'),
+#        'PORT': os.environ.get('DB_PORT'),
+#    }
+#}
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -121,7 +131,7 @@ DJOSER = {
                 'rest_framework.permissions.AllowAny'
             ],
     },
-    'SERIALIZERS': {
-        'user_registration': 'users.serializers.UserRegistrationSerializer',
-    }
+    #'SERIALIZERS': {
+    #    'user_registration': 'users.serializers.UserRegistrationSerializer',
+    #}
 }

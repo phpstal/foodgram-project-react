@@ -4,11 +4,14 @@ from django.db import models
 
 class ROLES_CHOICES(models.TextChoices):
     USER = 'user'
-    MODERATOR = 'moderator'
     ADMIN = 'admin'
 
 
 class CustomUser(AbstractUser):
+    username = models.CharField(
+        blank=True, 
+        max_length=150,
+    )
     email = models.EmailField(
         blank=False, 
         max_length=254, 
@@ -28,8 +31,8 @@ class CustomUser(AbstractUser):
         choices=ROLES_CHOICES.choices,
         verbose_name='Роль пользователя',
     )
-
-    REQUIRED_FIELDS = ('email', 'first_name', 'last_name')
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ('username', 'first_name', 'last_name')
 
     @property
     def is_admin(self):
