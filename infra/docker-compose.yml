@@ -9,11 +9,11 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     restart: always
   frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+    image: 19870208:frontend
+#      context: ../frontend
+#      dockerfile: Dockerfile
     volumes:
-      - ../frontend/:/app/result_build/
+      - result_build:/build
     depends_on:
       - db
   backend:
@@ -46,6 +46,9 @@ services:
       - frontend
 
 volumes:
+  result_build:
   postgres_data:
   static_value:
   media_value:
+
+    
