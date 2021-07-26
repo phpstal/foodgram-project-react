@@ -1,6 +1,9 @@
 import os
 from datetime import timedelta
 from pathlib import Path
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'django-insecure-v=gmh7^-2)*4-nvp)2^+zny&yqjzkyb@xjh)2fo@q+y(z$ffjv'
@@ -153,3 +156,17 @@ DJOSER = {
         'token_destroy': ['rest_framework.permissions.IsAuthenticated'],
     }
 }
+
+sentry_sdk.init(
+    dsn="https://ef27ff034b5f40b38eff40013c210bf0@o743419.ingest.sentry.io/5879896",
+    integrations=[DjangoIntegration()],
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0,
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True
+)
