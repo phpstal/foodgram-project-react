@@ -17,7 +17,7 @@ services:
     depends_on:
       - db
   backend:
-    image: 19870208:frontend:latest
+    image: 19870208/foodgram:latest
 #      context: ../backend
 #      dockerfile: Dockerfile
     restart: always
