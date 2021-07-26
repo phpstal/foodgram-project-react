@@ -1,9 +1,4 @@
 gunicorn==20.1.0
-python-dotenv
-drf-extra-fields
-reportlab
-fontTools
-rinoh-typeface-dejavuserif
 alabaster==0.7.12
 appdirs==1.4.4
 asgiref==3.4.1
