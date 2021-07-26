@@ -46,7 +46,7 @@ jobs:
         with:
           push: true
           context: ./backend/
-          tags: pavelkhan/foodgram:latest
+          tags: 19870208/foodgram:latest
 
   deploy:
     runs-on: ubuntu-latest
