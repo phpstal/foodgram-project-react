@@ -1,4 +1,4 @@
-GNU nano 4.8                                                               docker-compose.yml                                                                         version: '3.8'
+version: '3.8'
 
 services:
   db:
@@ -7,7 +7,6 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./.env
-
   frontend:
     image: 19870208:frontend:v1
     volumes:
@@ -26,7 +25,6 @@ services:
       - ./docs/openapi-schema.yml:/usr/share/nginx/html/api/docs/openapi-schema.yml
     depends_on:
       - frontend
-
   web:
     image: 19870208/foodgram:latest
     restart: always
