@@ -63,7 +63,7 @@ jobs:
           script: |
             sudo docker pull ${{ secrets.DOCKERHUB_LOGIN }}/foodgram
             sudo docker-compose stop
-            sudo docker-compose rm web
+            sudo docker-compose rm backend
             # Создаст файл для переменных окружения
             touch .env 
             # Наполнит файл переменными окружения из секретов GitHub
