@@ -79,7 +79,7 @@ class Recipe(models.Model):
     )
     tags = models.ManyToManyField(
         Tag, related_name='recipes', blank=True,
-        null=True, verbose_name='Тэги рецепта')
+        verbose_name='Тэги рецепта')
     pub_date = models.DateTimeField(
         auto_now_add=True, verbose_name='Дата публикации')
     cooking_time = models.PositiveSmallIntegerField(

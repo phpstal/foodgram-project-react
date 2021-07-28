@@ -6,9 +6,9 @@ from pathlib import Path
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'django-insecure-v=gmh7^-2)*4-nvp)2^+zny&yqjzkyb@xjh)2fo@q+y(z$ffjv'
 
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['178.154.222.72', 'localhost',]
+ALLOWED_HOSTS = ['127.0.0.1', '178.154.222.72', 'localhost',]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -55,22 +55,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': os.environ.get('DB_ENGINE'),
-        'NAME': os.environ.get('DB_NAME'),
-        'USER': os.environ.get('POSTGRES_USER'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT'),
-    }
-}
 #DATABASES = {
 #    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#        'ENGINE': os.environ.get('DB_ENGINE'),
+#        'NAME': os.environ.get('DB_NAME'),
+#        'USER': os.environ.get('POSTGRES_USER'),
+#        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+#        'HOST': os.environ.get('DB_HOST'),
+#        'PORT': os.environ.get('DB_PORT'),
 #    }
 #}
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
 
 
 AUTH_USER_MODEL = 'users.CustomUser'
