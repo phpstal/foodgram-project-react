@@ -21,8 +21,7 @@ jobs:
 
     - name: Test with flake8
       run: |
-        cd backend/
-        flake8
+        python -m flake8 --ignore=E501 backend/api/migrations/ backend/users/migrations/
 
   build_and_push_to_docker_hub:
     name: Push Docker image to Docker Hub
