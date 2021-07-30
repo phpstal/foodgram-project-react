@@ -1,6 +1,7 @@
 import django_filters.rest_framework
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.pagination import PageNumberPagination
@@ -8,7 +9,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .filters import RecipeFilter
+from .filters import IngredientFilter, RecipeFilter
 from .models import (CustomUser, Favorite, Follow, Ingredient,
                      IngredientInRecipe, Recipe, ShoppingList, Tag)
 from .paginators import PageNumberPaginatorModified
@@ -46,11 +47,11 @@ class RecipesViewSet(viewsets.ModelViewSet):
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
+    permission_classes = [AllowAny, ]
     serializer_class = IngredientSerializer
-    permission_classes = (AllowAny, )
+    filter_backends = [DjangoFilterBackend, ]
+    filter_class = IngredientFilter
     pagination_class = None
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['name', ]
 
 
 @api_view(['GET', ])

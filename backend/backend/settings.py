@@ -1,7 +1,4 @@
 import os
-from datetime import timedelta
-from pathlib import Path
-
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'django-insecure-v=gmh7^-2)*4-nvp)2^+zny&yqjzkyb@xjh)2fo@q+y(z$ffjv'
@@ -65,13 +62,6 @@ DATABASES = {
         'PORT': os.environ.get('DB_PORT'),
     }
 }
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#    }
-#}
-
 
 AUTH_USER_MODEL = 'users.CustomUser'
 

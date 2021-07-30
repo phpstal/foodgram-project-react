@@ -17,16 +17,16 @@ git clone https://github.com/phpstal/foodgram-project-react
 - [Установите Докер](https://docs.docker.com/engine/install/)
 - Выполнить команду: 
 ```bash
-docker pull 19870208/foodgram-project-react :latest
+docker pull 19870208/foodgram :latest
 ```
 #### Первоначальная настройка Django:
 ```bash
-- docker-compose exec web python manage.py migrate --noinput
-- docker-compose exec web python manage.py collectstatic --no-input
+- docker-compose exec backend python manage.py migrate --noinput
+- docker-compose exec backend python manage.py collectstatic --no-input
 ```
 #### Создание суперпользователя:
 ```bash
-- docker-compose exec web python manage.py createsuperuser
+- docker-compose exec backend python manage.py createsuperuser
 ```
 #### Заполнение .env:
 Чтобы добавить переменную в .env необходимо открыть файл .env в корневой директории проекта и поместить туда переменную в формате имя_переменной=значение.
@@ -44,8 +44,7 @@ DB_PORT=db_port
 #### Workflow badge:
 https://github.com/phpstal/foodgram-project-react/actions/workflows/main.yml/badge.svg
 #### Server address:
-http://178.154.221.192
-http://foodgram.ddns.net/
+http://178.154.223.189
 #### Superuser pass&email:
 email: admin@admin.ru
 pass: admin
